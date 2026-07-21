@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игроки — REISHED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo"><div class="logo-cube"></div><span>REISHED</span></a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="server.html" class="nav-link">Сервер</a>
+                <a href="players.html" class="nav-link active">Игроки</a>
+                <a href="profile.html" class="nav-link">Профиль</a>
+            </nav>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle">🌓</button>
+                <a href="auth.html" class="btn btn-primary" id="authBtn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container section">
+        <h1 style="font-size: 36px; font-weight: 800; margin-bottom: 16px;">Сообщество</h1>
+        <p style="color: var(--text-soft); margin-bottom: 32px;">Список зарегистрированных участников сервера. (Демо-данные до подключения БД)</p>
+        
+        <div class="grid-players" id="playersGrid">
+            <!-- Заполняется через JS -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div>© 2026 REISHED. Версия 26.2</div>
+            <div class="footer-links">
+                <a href="https://discord.gg/RZa2AQheQ4" target="_blank">Discord</a>
+                <a href="#" onclick="copyIP(); return false;">IP: reished.my-craft.cc</a>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script>
+        // Демо-данные для отображения. Позже заменятся на fetch('/api/players')
+        const mockPlayers = [
+            { name: 'Notch_Fan', role: 'admin', bio: 'Создатель сервера' },
+            { name: 'CraftQueen', role: 'admin', bio: 'Строю и модерю' },
+            { name: 'DiamondHunter', role: 'vip', bio: 'Алмазы — моя религия' },
+            { name: 'BrewMaster', role: 'player', bio: 'Варю лучший эль' },
+            { name: 'RedstoneGod', role: 'player', bio: 'Автоматизация всего' },
+            { name: 'PixelArtist', role: 'player', bio: 'Рисую картины из шерсти' }
+        ];
+
+        const grid = document.getElementById('playersGrid');
+        mockPlayers.forEach(p => {
+            const badgeClass = p.role === 'admin' ? 'admin' : (p.role === 'vip' ? 'vip' : '');
+            const roleName = p.role === 'admin' ? 'Админ' : (p.role === 'vip' ? 'VIP' : 'Игрок');
+            
+            grid.innerHTML += `
+                <div class="player-card">
+                    <div class="avatar">${p.name.slice(0, 2).toUpperCase()}</div>
+                    <div class="player-info">
+                        <h3>${p.name}</h3>
+                        <span class="badge ${badgeClass}">${roleName}</span>
+                        <p>${p.bio}</p>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
