@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жалобы — REISHED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-cube"></div>
+                <span>REISHED</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="players.html" class="nav-link">Игроки</a>
+                <a href="profile.html" class="nav-link">Профиль</a>
+                <a href="complaints.html" class="nav-link active">Жалобы</a>
+            </nav>
+            <div class="header-right">
+                <div class="clock" id="clock">--:--:--</div>
+                <a href="auth.html" class="btn btn-primary" id="authBtn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container section">
+        <div class="section-head">
+            <div class="section-eyebrow">Модерация</div>
+            <h2 class="section-title">Подать жалобу</h2>
+            <p class="section-desc">Расскажи, что случилось. Мы рассмотрим обращение в течение 24 часов.</p>
+        </div>
+
+        <div class="complaint-form">
+            <div class="form-field" style="margin-bottom: 16px;">
+                <label class="form-label">Причина</label>
+                <select class="form-select" id="compReason">
+                    <option value="">Выберите причину...</option>
+                    <option>Гриферство</option>
+                    <option>Читы</option>
+                    <option>Оскорбления</option>
+                    <option>Баги</option>
+                    <option>Другое</option>
+                </select>
+            </div>
+            
+            <div class="form-field" style="margin-bottom: 16px;">
+                <label class="form-label">Ник нарушителя</label>
+                <input type="text" class="form-input" id="compUser" placeholder="Кто нарушил правила">
+            </div>
+            
+            <div class="form-field" style="margin-bottom: 16px;">
+                <label class="form-label">Описание</label>
+                <textarea class="form-textarea" id="compText" placeholder="Подробно опишите, что произошло..."></textarea>
+            </div>
+            
+            <div class="form-field" style="margin-bottom: 20px;">
+                <label class="form-label">Скриншот (опционально)</label>
+                <div class="drop-zone" id="dropZone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p><strong>Перетащите файл</strong> или кликните для выбора</p>
+                    <p style="font-size: 12px; margin-top: 4px;">PNG, JPG до 5 МБ</p>
+                    <input type="file" id="compFile" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="submitComplaint()">
+                Отправить жалобу
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-copy">© 2026 REISHED. Ванильный Minecraft 26.2</div>
+                <div class="footer-links">
+                    <a href="https://discord.gg/RZa2AQheQ4" target="_blank">Discord</a>
+                    <a href="#" onclick="copyIP(); return false">reished.my-craft.cc</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const compFile = document.getElementById('compFile');
+        
+        dropZone.addEventListener('click', () => compFile.click());
+        
+        ['dragover', 'dragenter'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => {
+                ev.preventDefault();
+                dropZone.classList.add('drag');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => {
+                ev.preventDefault();
+                dropZone.classList.remove('drag');
+            });
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file) handleCompFile(file);
+        });
+        
+        compFile.addEventListener('change', (e) => {
+            if (e.target.files[0]) handleCompFile(e.target.files[0]);
+        });
+        
+        function handleCompFile(file) {
+            dropZone.innerHTML = `
+                <p><strong>✓ ${file.name}</strong></p>
+                <p style="font-size: 12px; margin-top: 4px;">${(file.size / 1024).toFixed(1)} КБ</p>
+            `;
+        }
+        
+        function submitComplaint() {
+            const reason = document.getElementById('compReason').value;
+            const user = document.getElementById('compUser').value.trim();
+            const text = document.getElementById('compText').value.trim();
+            
+            if (!reason || !user || !text) {
+                showToast('error', 'Заполните все поля', 'Причина, ник и описание обязательны');
+                return;
+            }
+            
+            // Сохранение жалобы
+            const complaints = JSON.parse(localStorage.getItem('reished_complaints') || '[]');
+            complaints.push({
+                id: Date.now(),
+                reason,
+                user,
+                text,
+                date: new Date().toISOString(),
+                status: 'new'
+            });
+            localStorage.setItem('reished_complaints', JSON.stringify(complaints));
+            
+            showToast('success', 'Жалоба принята', 'Мы рассмотрим её в ближайшее время');
+            
+            // Очистка формы
+            document.getElementById('compReason').value = '';
+            document.getElementById('compUser').value = '';
+            document.getElementById('compText').value = '';
+            dropZone.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p><strong>Перетащите файл</strong> или кликните для выбора</p>
+                <p style="font-size: 12px; margin-top: 4px;">PNG, JPG до 5 МБ</p>
+            `;
+        }
+    </script>
+</body>
+</html>

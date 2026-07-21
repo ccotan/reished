@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — REISHED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-cube"></div>
+                <span>REISHED</span>
+            </a>
+            <div class="header-right">
+                <div class="clock" id="clock">--:--:--</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="auth-wrap">
+            <h2 id="authTitle">Вход в аккаунт</h2>
+            <p class="auth-sub" id="authSub">Рады видеть тебя снова</p>
+
+            <form id="authForm">
+                <div class="form-field">
+                    <label class="form-label">Никнейм</label>
+                    <input type="text" class="form-input" id="username" required placeholder="Ваш игровой ник">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-input" id="password" required placeholder="••••••••">
+                </div>
+                <div id="emailField" class="form-field" style="display: none;">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="you@example.com">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 14px; justify-content: center;">
+                    Войти
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="authSwitchText">Нет аккаунта?</span>
+                <a onclick="toggleAuthMode()">
+                    <span id="authSwitchLink">Зарегистрироваться</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-copy">© 2026 REISHED. Ванильный Minecraft 26.2</div>
+                <div class="footer-links">
+                    <a href="https://discord.gg/RZa2AQheQ4" target="_blank">Discord</a>
+                    <a href="#" onclick="copyIP(); return false">reished.my-craft.cc</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        let isLogin = true;
+
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').textContent = isLogin ? 'Вход в аккаунт' : 'Создать аккаунт';
+            document.getElementById('authSub').textContent = isLogin ? 'Рады видеть тебя снова' : 'Присоединяйся к REISHED';
+            document.querySelector('button[type="submit"]').textContent = isLogin ? 'Войти' : 'Зарегистрироваться';
+            document.getElementById('authSwitchText').textContent = isLogin ? 'Нет аккаунта?' : 'Уже есть аккаунт?';
+            document.getElementById('authSwitchLink').textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
+            document.getElementById('emailField').style.display = isLogin ? 'none' : 'flex';
+        }
+
+        document.getElementById('authForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (isLogin) {
+                // Вход
+                const users = JSON.parse(localStorage.getItem('reished_players') || '[]');
+                const user = users.find(u => u.name === username);
+                
+                if (!user) {
+                    showToast('error', 'Ошибка', 'Пользователь не найден');
+                    return;
+                }
+                
+                // В демо-версии просто входим (пароль не проверяем)
+                localStorage.setItem('reished_user', JSON.stringify({
+                    id: user.id,
+                    username: user.name,
+                    name: user.name,
+                    role: user.role,
+                    prefix: user.prefix
+                }));
+                
+                showToast('success', 'Добро пожаловать!', `Привет, ${username}`);
+                setTimeout(() => window.location.href = 'profile.html', 1000);
+            } else {
+                // Регистрация
+                const email = document.getElementById('email').value.trim();
+                const users = JSON.parse(localStorage.getItem('reished_players') || '[]');
+                
+                if (users.find(u => u.name === username)) {
+                    showToast('error', 'Ошибка', 'Такой никнейм уже занят');
+                    return;
+                }
+                
+                const newUser = {
+                    id: Date.now(),
+                    name: username,
+                    username: username,
+                    email: email,
+                    role: 'player',
+                    prefix: 'Игрок',
+                    bio: '',
+                    playtime: 0,
+                    kills: 0,
+                    brews: 0,
+                    is_online: 0,
+                    avatar: null,
+                    cover: null
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('reished_players', JSON.stringify(users));
+                localStorage.setItem('reished_user', JSON.stringify({
+                    id: newUser.id,
+                    username: newUser.name,
+                    name: newUser.name,
+                    role: newUser.role,
+                    prefix: newUser.prefix
+                }));
+                
+                showToast('success', 'Аккаунт создан', 'Добро пожаловать на REISHED!');
+                setTimeout(() => window.location.href = 'profile.html', 1000);
+            }
+        });
+    </script>
+</body>
+</html>

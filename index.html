@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REISHED — Ванильный Minecraft 26.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-cube"></div>
+                <span>REISHED</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">Главная</a>
+                <a href="players.html" class="nav-link">Игроки</a>
+                <a href="profile.html" class="nav-link">Профиль</a>
+                <a href="complaints.html" class="nav-link">Жалобы</a>
+            </nav>
+            <div class="header-right">
+                <div class="clock" id="clock">--:--:--</div>
+                <a href="auth.html" class="btn btn-primary" id="authBtn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-badge"><span class="dot"></span>Сезон 26.2 · Ваниль</div>
+            <h1>REISHED — <span class="accent">честная ваниль</span> с характером</h1>
+            <p class="hero-sub">Работаем 24/7. Уникальные механики, дружное сообщество и никаких pay-to-win. Заходи, построй дом, свари пиво — и оставайся надолго.</p>
+            
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="copyIP()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    reished.my-craft.cc
+                </button>
+                <a href="https://discord.gg/RZa2AQheQ4" target="_blank" class="btn btn-ghost">Discord сервер →</a>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-label">Сейчас в игре</div>
+                    <div class="stat-value"><span id="statOnline">0</span><span class="unit">/ 100</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Всего игроков</div>
+                    <div class="stat-value" id="statTotal">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Уникальных префиксов</div>
+                    <div class="stat-value">24</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Аптайм</div>
+                    <div class="stat-value">99.8<span class="unit">%</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="section-head">
+                <div class="section-eyebrow">Уникальные фишки</div>
+                <h2 class="section-title">Всё, что делает REISHED особенным</h2>
+                <p class="section-desc">Мы не ломаем ваниль — мы аккуратно добавляем то, чего в ней не хватало.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-tag">Голос</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                    </div>
+                    <h3>Plasmo Voice</h3>
+                    <p>Голосовой чат прямо в игре. Общайся с друзьями без Discord и TeamSpeak — просто включи мод и говори.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Крафт</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17 8h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/><line x1="9" y1="13" x2="9" y2="17"/><line x1="15" y1="13" x2="15" y2="17"/></svg>
+                    </div>
+                    <h3>Brewery</h3>
+                    <p>Вари пиво, эль и коктейли. Прокачивай навык пивовара, получай уникальные эффекты и угощай друзей.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Комфорт</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M6 12V7a6 6 0 0 1 12 0v5"/><path d="M4 12h16v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><line x1="6" y1="20" x2="6" y2="22"/><line x1="18" y1="20" x2="18" y2="22"/></svg>
+                    </div>
+                    <h3>Gsit</h3>
+                    <p>Садись на любую поверхность — блок, забор, ступеньки. Отдыхай после долгого дня с киркой в руке.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Датапак</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2L4 14h7l-1 8 10-12h-7z"/></svg>
+                    </div>
+                    <h3>Камнерез для дерева</h3>
+                    <p>Перерабатывай брёвна в камнерезе — получай доски, палки и другие изделия без верстака. Экономия ресурсов.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Датапак</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+                    </div>
+                    <h3>Автопосадка зерна</h3>
+                    <p>Бросай семена на пашню — они сами посадятся. Удобное фермерство без танцев с бубном.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Датапак</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/><path d="M14 14h6v6h-6z"/></svg>
+                    </div>
+                    <h3>Кастомные порталы</h3>
+                    <p>Новые точки доступа в Ад. Строй порталы по особым схемам и открывай секретные локации Нижнего мира.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-tag">Датапак</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M7 13h10v4a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><circle cx="9" cy="8" r="1" fill="currentColor"/><circle cx="15" cy="8" r="1" fill="currentColor"/></svg>
+                    </div>
+                    <h3>Головы с игроков</h3>
+                    <p>С убитых игроков падают их головы. Коллекционируй, вешай на стены, хвастайся трофеями.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="section-head">
+                <div class="section-eyebrow">Быстрый старт</div>
+                <h2 class="section-title">Как начать играть</h2>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <h4>Установи Minecraft 1.20.x</h4>
+                    <p>Любая лицензионная или TLauncher-копия нужной версии.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <h4>Скачай моды</h4>
+                    <p>Plasmo Voice (голос) — опционально. Остальное работает без модов.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <h4>Добавь сервер</h4>
+                    <p>IP: <strong>reished.my-craft.cc</strong>. Версия: 26.2.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <h4>Играй!</h4>
+                    <p>Заходи, знакомься, строй. Всё остальное приложится.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-copy">© 2026 REISHED. Ванильный Minecraft 26.2</div>
+                <div class="footer-links">
+                    <a href="https://discord.gg/RZa2AQheQ4" target="_blank">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        Discord
+                    </a>
+                    <a href="#" onclick="copyIP(); return false">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        reished.my-craft.cc
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

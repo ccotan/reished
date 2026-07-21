@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игроки — REISHED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-cube"></div>
+                <span>REISHED</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="players.html" class="nav-link active">Игроки</a>
+                <a href="profile.html" class="nav-link">Профиль</a>
+                <a href="complaints.html" class="nav-link">Жалобы</a>
+            </nav>
+            <div class="header-right">
+                <div class="clock" id="clock">--:--:--</div>
+                <a href="auth.html" class="btn btn-primary" id="authBtn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container section">
+        <div class="section-head">
+            <div class="section-eyebrow">Сообщество</div>
+            <h2 class="section-title">Игроки REISHED</h2>
+            <p class="section-desc">Наши герои. Кликни на карточку — узнай больше.</p>
+        </div>
+
+        <div class="players-toolbar">
+            <div class="filter-group" id="roleFilter">
+                <button class="filter-btn active" data-role="all">Все</button>
+                <button class="filter-btn" data-role="admin">Админы</button>
+                <button class="filter-btn" data-role="vip">VIP</button>
+                <button class="filter-btn" data-role="player">Игроки</button>
+            </div>
+            <div class="filter-group" id="onlineFilter">
+                <button class="filter-btn active" data-online="all">Все</button>
+                <button class="filter-btn" data-online="online">Онлайн</button>
+            </div>
+        </div>
+
+        <div class="players-grid" id="playersGrid"></div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-copy">© 2026 REISHED. Ванильный Minecraft 26.2</div>
+                <div class="footer-links">
+                    <a href="https://discord.gg/RZa2AQheQ4" target="_blank">Discord</a>
+                    <a href="#" onclick="copyIP(); return false">reished.my-craft.cc</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Загрузка игроков
+        function loadPlayers() {
+            const players = JSON.parse(localStorage.getItem('reished_players') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('reished_user') || 'null');
+            const grid = document.getElementById('playersGrid');
+            
+            if (players.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-soft); text-align: center; grid-column: 1/-1; padding: 40px;">Пока нет зарегистрированных игроков</p>';
+                return;
+            }
+
+            grid.innerHTML = players.map(player => `
+                <div class="player-card" onclick="openPlayerModal(${player.id})">
+                    <div class="player-top">
+                        <div class="avatar ${player.is_online ? 'online' : ''}" style="${player.avatar ? `background-image: url(${player.avatar})` : ''}">
+                            ${player.avatar ? '' : player.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <div class="player-name">${player.name}</div>
+                                <span class="player-prefix prefix-${player.role || 'player'}">${player.prefix || (player.role === 'admin' ? 'Админ' : player.role === 'vip' ? 'VIP' : 'Игрок')}</span>
+                            </div>
+                            <div class="player-bio">${player.bio || '—'}</div>
+                        </div>
+                    </div>
+                    ${currentUser && currentUser.role === 'admin' && currentUser.id !== player.id ? `
+                        <div class="admin-actions" style="margin-top: 12px; display: flex; gap: 8px;" onclick="event.stopPropagation()">
+                            <button class="btn-sm ${player.role === 'admin' ? 'btn-sm-danger' : 'btn-sm-primary'}" 
+                                    onclick="toggleAdminRole(${player.id}, '${player.name}')">
+                                ${player.role === 'admin' ? 'Снять админа' : 'Назначить админом'}
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Назначение/снятие админа
+        function toggleAdminRole(playerId, playerName) {
+            const players = JSON.parse(localStorage.getItem('reished_players') || '[]');
+            const player = players.find(p => p.id === playerId);
+            
+            if (!player) return;
+            
+            const newRole = player.role === 'admin' ? 'player' : 'admin';
+            const newPrefix = newRole === 'admin' ? 'Админ' : 'Игрок';
+            
+            if (confirm(`Вы действительно хотите ${newRole === 'admin' ? 'назначить' : 'снять'} ${playerName} ${newRole === 'admin' ? 'администратором' : 'с должности администратора'}?`)) {
+                player.role = newRole;
+                player.prefix = newPrefix;
+                localStorage.setItem('reished_players', JSON.stringify(players));
+                
+                // Обновить текущего пользователя если это он
+                const currentUser = JSON.parse(localStorage.getItem('reished_user') || 'null');
+                if (currentUser && currentUser.id === playerId) {
+                    currentUser.role = newRole;
+                    currentUser.prefix = newPrefix;
+                    localStorage.setItem('reished_user', JSON.stringify(currentUser));
+                }
+                
+                loadPlayers();
+                showToast('success', 'Роль изменена', `${playerName} теперь ${newPrefix}`);
+            }
+        }
+
+        // Фильтры
+        let filterRole = 'all';
+        let filterOnline = 'all';
+
+        document.getElementById('roleFilter').addEventListener('click', (e) => {
+            if (e.target.dataset.role) {
+                filterRole = e.target.dataset.role;
+                document.querySelectorAll('#roleFilter .filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                applyFilters();
+            }
+        });
+
+        document.getElementById('onlineFilter').addEventListener('click', (e) => {
+            if (e.target.dataset.online) {
+                filterOnline = e.target.dataset.online;
+                document.querySelectorAll('#onlineFilter .filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                applyFilters();
+            }
+        });
+
+        function applyFilters() {
+            const players = JSON.parse(localStorage.getItem('reished_players') || '[]');
+            const grid = document.getElementById('playersGrid');
+            
+            let filtered = players.filter(p => {
+                if (filterRole !== 'all' && p.role !== filterRole) return false;
+                if (filterOnline === 'online' && !p.is_online) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-soft); text-align: center; grid-column: 1/-1; padding: 40px;">Игроки не найдены</p>';
+                return;
+            }
+
+            const currentUser = JSON.parse(localStorage.getItem('reished_user') || 'null');
+            
+            grid.innerHTML = filtered.map(player => `
+                <div class="player-card" onclick="openPlayerModal(${player.id})">
+                    <div class="player-top">
+                        <div class="avatar ${player.is_online ? 'online' : ''}" style="${player.avatar ? `background-image: url(${player.avatar})` : ''}">
+                            ${player.avatar ? '' : player.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <div class="player-name">${player.name}</div>
+                                <span class="player-prefix prefix-${player.role || 'player'}">${player.prefix || (player.role === 'admin' ? 'Админ' : player.role === 'vip' ? 'VIP' : 'Игрок')}</span>
+                            </div>
+                            <div class="player-bio">${player.bio || '—'}</div>
+                        </div>
+                    </div>
+                    ${currentUser && currentUser.role === 'admin' && currentUser.id !== player.id ? `
+                        <div class="admin-actions" style="margin-top: 12px; display: flex; gap: 8px;" onclick="event.stopPropagation()">
+                            <button class="btn-sm ${player.role === 'admin' ? 'btn-sm-danger' : 'btn-sm-primary'}" 
+                                    onclick="toggleAdminRole(${player.id}, '${player.name}')">
+                                ${player.role === 'admin' ? 'Снять админа' : 'Назначить админом'}
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function openPlayerModal(id) {
+            showToast('info', 'Информация', 'Модальное окно игрока (в разработке)');
+        }
+
+        // Инициализация
+        loadPlayers();
+    </script>
+</body>
+</html>
